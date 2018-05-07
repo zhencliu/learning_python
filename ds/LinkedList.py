@@ -16,8 +16,7 @@ class Node(object):
 class SLinkedList(object):
     ''' A single linked list.
         head_tail is a node which identifies the head and tail node.
-            head_tail.next -> the head
-            head_tail.prev -> the tail
+            head_tail.next -> head node -> node ... -> tail node <- head_tail.prev
             head_tail.value -> the count of nodes in the list.
     ''' 
     def __init__(self):
@@ -27,12 +26,10 @@ class SLinkedList(object):
         return self.head_tail.value
 
     def __str__(self):
-        node = self.head_tail.next
         l = []
 
-        while (node):
-            l.append(str(node.value))
-            node = node.next
+        for value in self:
+            l.append(str(value))
         
         return 'Elem List: %s' %(' '.join(l))
 
@@ -119,14 +116,128 @@ class SLinkedList(object):
             return None
 
     def print_list(self):
-        node = self.head_tail.next
+        for value in self:
+            print(value)
 
-        while (node):
+class DLinkedList(object):
+    ''' A double linked list.
+        head_tail is a node which identifies the head and tail node.
+            head node.prev -> head_tail
+            tail node.next -> head_tail
+
+            head_tail.next<=>head node<=>node...<=>tail node<=>head_tail.prev
+            head_tail.value -> the count of nodes in the list.
+    ''' 
+    def __init__(self):
+        self.head_tail = Node(0)
+        self.head_tail.next = self.head_tail.prev = self.head_tail
+
+    def __len__(self):
+        return self.head_tail.value
+
+    def __str__(self):
+        l = []
+
+        for value in self:
+            l.append(str(value))
+        
+        return 'Elem List: %s' %(' '.join(l))
+
+    __repr__ = __str__
+     
+    def __iter__(self):
+        self.curr = self.head_tail.next
+        return self
+    
+    def __next__(self):
+        curr = self.curr
+
+        if curr is self.head_tail:
+            # Re-set the curr pointer to the head
+            self.curr = self.head_tail.next
+            raise StopIteration()
+
+        self.curr = self.curr.next
+        return curr.value
+           
+
+    def insert_head(self, value):
+        node = Node(value)
+
+        if self.head_tail.value == 0:
+            self.head_tail.next = self.head_tail.prev = node
+            node.next = self.head_tail
+        else:
+            node.next = self.head_tail.next
+            self.head_tail.next.prev = node
+            self.head_tail.next = node
+
+        node.prev = self.head_tail
+        self.head_tail.value += 1
+
+    def insert_tail(self, value):
+        node = Node(value)
+
+        if self.head_tail.value == 0:
+            self.head_tail.next = self.head_tail.prev = node
+            node.prev = self.head_tail
+        else:
+            self.head_tail.prev.next = node
+            node.prev = self.head_tail.prev
+            self.head_tail.prev = node
+
+        node.next = self.head_tail
+        self.head_tail.value += 1
+
+    def pop_head(self):
+        node = self.head_tail.next
+        self.head_tail.value -= 1
+
+        if self.head_tail.value <= 0:
+            # An empty list
+            self.head_tail.next = self.head_tail.prev = self.head_tail
+            self.head_tail.value = 0
+        else:
+            # Re-set the head
+            self.head_tail.next = node.next
+            node.next.prev = self.head_tail
+        
+        if node is not self.head_tail:
+            return node.value
+        else:
+            return None
+
+    def pop_tail(self):
+        node = self.head_tail.prev
+        self.head_tail.value -= 1
+
+        if self.head_tail.value <= 0:
+            # An empty list
+            self.head_tail.next = self.head_tail.prev = self.head_tail
+            self.head_tail.value = 0
+        else:
+            # Re-set the tail 
+            self.head_tail.prev = node.prev
+            node.prev.next = self.head_tail
+
+        if node is not self.head_tail:
+            return node.value
+        else:
+            return None
+
+    def print_list(self):
+        for value in self:
+            print(value)
+
+    def print_list_reverse(self):
+        node = self.head_tail.prev
+        while node is not self.head_tail:
             print(node.value)
-            node = node.next
+            node = node.prev
 
 if __name__ == '__main__':
-    s = SLinkedList();
+    #s = SLinkedList();
+    s = DLinkedList();
 
     # Pop an empty list
     print(s.pop_head())
@@ -157,3 +268,5 @@ if __name__ == '__main__':
 
     for val in s:
         print("Iteration: %s" %val)
+
+    s.print_list_reverse()
