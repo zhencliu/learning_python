@@ -50,7 +50,25 @@ class SLinkedList(object):
         self.curr = self.curr.next
         return curr.value
            
+    def __getitem__(self, index):
+        '''Make a linked list accessed by index, i.e. list[index]
+        '''
+        if 0 <= index < self.head_tail.value:
+            return self._goto(index)
+        else:
+            #raise ValueError("Invalid index.")
+            return None
+    
+    def _goto(self, index):
+        i = 0
+        node = self.head_tail.next;
 
+        while (i < index):
+            node = node.next
+            i += 1
+
+        return node.value
+                
     def insert_head(self, value):
         node = Node(value)
 
@@ -160,6 +178,30 @@ class DLinkedList(object):
         self.curr = self.curr.next
         return curr.value
            
+    def __getitem__(self, index):
+        '''Make a linked list accessed by index, i.e. list[index]
+        '''
+        if 0 <= abs(index) < self.head_tail.value or index == -(self.head_tail.value):
+            return self._goto(index)
+        else:
+            return None
+    
+    def _goto(self, index):
+        node = None
+        if index < 0:
+            node = self.head_tail.prev;
+            i = 1
+            while i < abs(index):
+                node = node.prev
+                i += 1
+        else:
+            node = self.head_tail.next;
+            i = 0
+            while i < index:
+                node = node.next
+                i += 1
+
+        return node.value
 
     def insert_head(self, value):
         node = Node(value)
@@ -236,7 +278,7 @@ class DLinkedList(object):
             node = node.prev
 
 if __name__ == '__main__':
-    #s = SLinkedList();
+    # s = SLinkedList();
     s = DLinkedList();
 
     # Pop an empty list
@@ -250,6 +292,12 @@ if __name__ == '__main__':
     # Insert tail 
     for i in range(6, 11):
         s.insert_tail(i)
+
+    print("index 9: %s" % s[9])
+    print("index 0: %s" % s[0])
+    print("index -1: %s" % s[-1])
+    print("index -10: %s" % s[-10])
+    print("index 100: %s" % s[100])
 
     # Call __str__()
     print(s)
@@ -269,4 +317,4 @@ if __name__ == '__main__':
     for val in s:
         print("Iteration: %s" %val)
 
-    s.print_list_reverse()
+    #s.print_list_reverse()
