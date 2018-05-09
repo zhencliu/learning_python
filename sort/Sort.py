@@ -67,6 +67,29 @@ class Sort(object):
             arr[j+1] = tmp # bug: j+1 instead of j
             i += 1
     
+    def _shsort(arr, low, high, cmp_obj):
+        step = (high - low + 1) // 2
+
+        while step > 0:
+            i =  step
+
+            while i <= high:
+                tmp = arr[i]
+                j = i - step
+    
+                while j >= low:
+                    if tmp < arr[j]:
+                        arr[j+step] = arr[j]
+                    else:
+                        break
+    
+                    j -= step
+    
+                arr[j+step] = tmp # bug: j+1 instead of j
+                i += 1
+
+            step //= 2
+
     def _perc_down(arr, pos, cnt, cmp_obj):
         '''Used for heap ajustment'''
 
@@ -175,6 +198,9 @@ class Sort(object):
     def isort(arr, cmp_obj=None):
         Sort._isort(arr, 0, len(arr)-1, cmp_obj)
 
+    def shsort(arr, cmp_obj=None):
+        Sort._shsort(arr, 0, len(arr)-1, cmp_obj)
+
     def msort(arr, cmp_obj=None):
         Sort._msort(arr, 0, len(arr)-1, cmp_obj)
 
@@ -193,6 +219,10 @@ if __name__ == '__main__':
     arr = random.sample(range(500), 10)
     arr = arr * 3
     print("before sort: %s" %arr)
+
+    Sort.shsort(arr)
+    print("after shsort: %s" %arr)
+    assert Sort.is_sorted(arr)
 
     Sort.msort(arr)
     print("after msort: %s" %arr)
