@@ -115,6 +115,48 @@ class Sort(object):
             Sort._perc_down(arr, pos, cnt, cmp_obj)
             pos -= 1
 
+    def _merge(arr, beg, mid, end, cmp_obj):
+        i = 0
+        lbeg = beg
+        rbeg = mid
+        rend = end
+        aux = [None] * (end - beg + 1)
+
+        while lbeg < mid and rbeg < end + 1:
+            if arr[lbeg] < arr[rbeg]:
+                aux[i] = arr[lbeg]
+                lbeg += 1
+            else:
+                aux[i] = arr[rbeg]
+                rbeg += 1
+
+            i += 1
+
+        while lbeg < mid:
+            aux[i] = arr[lbeg]
+            i += 1
+            lbeg += 1
+
+        while rbeg < end + 1:
+            aux[i] = arr[rbeg]
+            i += 1
+            rbeg += 1
+
+        # copy sorted data back
+        i = 0
+        while beg <= end:
+            arr[beg] = aux[i]
+            beg += 1
+            i += 1
+
+    def _msort(arr, beg, end, cmp_obj):
+        if end - beg + 1 < Sort.__CUTOFF:
+            Sort._isort(arr, beg, end, cmp_obj)
+        else:
+            Sort._msort(arr, beg, (beg+end)//2, cmp_obj)
+            Sort._msort(arr, (beg+end)//2+1, end, cmp_obj)
+            Sort._merge(arr, beg, (beg+end)//2+1, end, cmp_obj)
+
     def is_sorted(arr, cmp_obj = None):
         ret = True
         i = 1
@@ -132,10 +174,12 @@ class Sort(object):
     
     def isort(arr, cmp_obj=None):
         Sort._isort(arr, 0, len(arr)-1, cmp_obj)
-    
+
+    def msort(arr, cmp_obj=None):
+        Sort._msort(arr, 0, len(arr)-1, cmp_obj)
+
     def hsort(arr, cmp_obj=None):
         Sort.make_heap(arr, cmp_obj=None)
-        print(arr)
 
         i = len(arr) - 1
         while i > 0:
@@ -149,6 +193,10 @@ if __name__ == '__main__':
     arr = random.sample(range(500), 10)
     arr = arr * 3
     print("before sort: %s" %arr)
+
+    Sort.msort(arr)
+    print("after msort: %s" %arr)
+    assert Sort.is_sorted(arr)
 
     Sort.hsort(arr)
     print("after hsort: %s" %arr)
