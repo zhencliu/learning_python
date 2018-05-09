@@ -50,13 +50,20 @@ class SLinkedList(object):
         self.curr = self.curr.next
         return curr.value
            
+    def __setitem__(self, index, value):
+        '''Make a linked list accessed by index, i.e. list[index] = value
+        '''
+        if 0 <= index < self.head_tail.value:
+            self._goto(index).value = value
+        else:
+            raise ValueError("out of space.")
+    
     def __getitem__(self, index):
         '''Make a linked list accessed by index, i.e. list[index]
         '''
         if 0 <= index < self.head_tail.value:
-            return self._goto(index)
+            return self._goto(index).value
         else:
-            #raise ValueError("Invalid index.")
             return None
     
     def _goto(self, index):
@@ -67,7 +74,7 @@ class SLinkedList(object):
             node = node.next
             i += 1
 
-        return node.value
+        return node
                 
     def insert_head(self, value):
         node = Node(value)
@@ -178,11 +185,19 @@ class DLinkedList(object):
         self.curr = self.curr.next
         return curr.value
            
+    def __setitem__(self, index, value):
+        '''Make a linked list accessed by index, i.e. list[index] = value
+        '''
+        if 0 <= abs(index) < self.head_tail.value or index == -(self.head_tail.value):
+            self._goto(index).value = value
+        else:
+            raise ValueError("out of space.")
+
     def __getitem__(self, index):
         '''Make a linked list accessed by index, i.e. list[index]
         '''
         if 0 <= abs(index) < self.head_tail.value or index == -(self.head_tail.value):
-            return self._goto(index)
+            return self._goto(index).value
         else:
             return None
     
@@ -201,7 +216,7 @@ class DLinkedList(object):
                 node = node.next
                 i += 1
 
-        return node.value
+        return node
 
     def insert_head(self, value):
         node = Node(value)
@@ -278,43 +293,47 @@ class DLinkedList(object):
             node = node.prev
 
 if __name__ == '__main__':
-    # s = SLinkedList();
-    s = DLinkedList();
+    sl = SLinkedList();
+    dl = DLinkedList();
 
-    # Pop an empty list
-    print(s.pop_head())
-    print(s.pop_tail())
-
-    # Insert head
-    for i in range(1, 6):
-        s.insert_head(i)
-
-    # Insert tail 
-    for i in range(6, 11):
-        s.insert_tail(i)
-
-    print("index 9: %s" % s[9])
-    print("index 0: %s" % s[0])
-    print("index -1: %s" % s[-1])
-    print("index -10: %s" % s[-10])
-    print("index 100: %s" % s[100])
-
-    # Call __str__()
-    print(s)
-
-    # Call __iter__() and __next__()
-    for val in s:
-        print("Iteration: %s" %val)
-
-    # Pop head and pop tail
-    print("pop tail: %s" %s.pop_tail())
-    print("pop head: %s" %s.pop_head())
-    s.print_list()
-
-    # Call __len__()
-    print("Length of the list: %d" %len(s))
-
-    for val in s:
-        print("Iteration: %s" %val)
-
-    #s.print_list_reverse()
+    for s in sl,dl:
+        # Pop an empty list
+        print("Testing linked list")
+        print("pop head: %s" %s.pop_head())
+        print("pop tail: %s" %s.pop_tail())
+    
+        # Insert head
+        for i in range(1, 6):
+            s.insert_head(i)
+    
+        # Insert tail 
+        for i in range(6, 11):
+            s.insert_tail(i)
+    
+        print("index 9: %s" % s[9])
+        print("index 0: %s" % s[0])
+        print("index -1: %s" % s[-1])
+        print("index -10: %s" % s[-10])
+        print("index 100: %s" % s[100])
+    
+        # Call __str__()
+        print(s)
+    
+        # Call __iter__() and __next__()
+        for val in s:
+            print("Iteration: %s" %val)
+    
+        # Pop head and pop tail
+        print("pop tail: %s" %s.pop_tail())
+        print("pop head: %s" %s.pop_head())
+        s.print_list()
+    
+        # Call __len__()
+        print("Length of the list: %d" %len(s))
+    
+        # Call __setitem__ and __getitem__
+        print("getitem: %s" %s[len(s) - 1])
+        s[len(s) - 1] = None
+        print("after setitem: %s" %s[len(s) - 1])
+    
+        #s.print_list_reverse()
