@@ -6,14 +6,7 @@
 
     An implementation for binary tree.
 '''
-import pdb
-
-class TreeNode:
-    def __init__(self, value = None):
-        self.value = value
-        self.left  = None
-        self.right = None
-        self.parent= None
+from TreeNode import TreeNode
 
 class BiTree(object):
     ''' A binary tree implementation.
@@ -60,43 +53,18 @@ class BiTree(object):
         self._postorder(self.root)
 
     def print(self):
-        l = [self.root]
+        from collections import deque
 
-
-class BSTree(BiTree):
-    '''Binary search tree.'''
-    def __init__(self):
-        super().__init__()
-
-    def insert(self, value):
-        new = TreeNode(value)
-
-        if self.empty():
-            self._root = new
-        else:
-            self._insert(self._root, new)
+        q = deque()
+        q.appendright(self.root)
         
-        self._count += 1
+        while not q.empty():
+            node = q.popleft()
+            print(node.value)
 
-    def _insert(self, node, new):
-        if node is None:
-            return new
-        else:
-            if new.value < node.value:
-                node.left  = self._insert(node.left, new)
-            else:
-                node.right = self._insert(node.right, new)
+            if node.left is not None:
+                q.appendright(node.left)
             
-            return node
-     
-    def create(self, iterator):
-        for val in iterator:
-            self.insert(val)
-
-if __name__ == '__main__':
-    import random
-
-    t = BSTree();
-    t.create(random.sample(range(100), 10))
-    t.inorder()
+            if node.right is not None:
+                q.appendright(node.right)
 
