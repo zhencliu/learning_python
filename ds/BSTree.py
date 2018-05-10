@@ -62,3 +62,7 @@ if __name__ == '__main__':
     print("Postorder:")
     t.postorder()
 
+    res = t.topdown()
+    print("topdown: %s" %res)
+    print("bottomup: %s" %res[::-1])
+

@@ -52,19 +52,33 @@ class BiTree(object):
     def postorder(self):
         self._postorder(self.root)
 
-    def print(self):
+    def topdown(self):
         from collections import deque
 
         q = deque()
-        q.appendright(self.root)
+        q.append(self.root)
+        cnt_current = 1
+        cnt_next = 0
+        list_current = []
+        result = []
         
-        while not q.empty():
+        while len(q) > 0:
             node = q.popleft()
-            print(node.value)
+            cnt_current -= 1
+            list_current.append(node.value)
 
             if node.left is not None:
-                q.appendright(node.left)
+                q.append(node.left)
+                cnt_next += 1
             
             if node.right is not None:
-                q.appendright(node.right)
+                q.append(node.right)
+                cnt_next += 1
 
+            if cnt_current == 0:
+                cnt_current = cnt_next
+                cnt_next = 0
+                result.append(list_current)
+                list_current = []
+
+        return result
