@@ -15,9 +15,21 @@ class BiTree(object):
         self._root  = None
         self._count = 0
 
+    @property
+    def count(self):
+        return self._count
+
+    @count.setter
+    def count(self, cnt):
+        self._count = cnt
+
     @property 
     def root(self):
         return self._root
+
+    @root.setter
+    def root(self, node):
+        self._root = node
 
     def __len__(self):
         return self._count
