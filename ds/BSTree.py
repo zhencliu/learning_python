@@ -14,7 +14,7 @@ class BSTree(BiTree):
     def __init__(self):
         super().__init__()
 
-    def _insert(self, node, new):
+    def _insert_recur(self, node, new):
         if node is None:
             return new
         else:
@@ -27,7 +27,7 @@ class BSTree(BiTree):
             
             return node
      
-    def _delete(self, node, parent):
+    def _delete_recur(self, node, parent):
         if node.left is None and node.right is None:
             if parent.left is node:
                 parent.left = None
@@ -175,7 +175,6 @@ class BSTree(BiTree):
 
     def insert_recur(self, value):
         new = TreeNode(value)
-        new.ref = 1
 
         if self.empty():
             self._root = new
@@ -192,7 +191,6 @@ class BSTree(BiTree):
             node.ref += 1
         else:
             new = TreeNode(value)
-            new.ref = 1
             
             # 2. The data doesn't exist
             if parent is None:

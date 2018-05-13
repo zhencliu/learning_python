@@ -15,6 +15,9 @@ class BiTree(object):
         self._root  = None
         self._count = 0
 
+    def height(self, T):
+        return T._height if T is not None else -1
+
     @property
     def count(self):
         return self._count
@@ -94,3 +97,13 @@ class BiTree(object):
                 list_current = []
 
         return result
+
+    def _clear(self, T):
+        if T is not None:
+            self._clear(T.left)
+            self._clear(T.right)
+            del T
+
+    def clear(self):
+        self._clear(self.root)
+        #self.root = None

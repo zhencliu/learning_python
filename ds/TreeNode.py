@@ -12,7 +12,19 @@ class TreeNode:
         self._left  = None
         self._right = None
         self._parent= None
-        self._ref   = 0
+        self._ref   = 1
+        self._height= 0
+
+    def __del__(self):
+        self = None
+
+    @property
+    def height(self):
+        return self._height
+
+    @height.setter
+    def height(self, value):
+        self._height = value
 
     @property
     def value(self):
