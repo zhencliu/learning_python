@@ -15,9 +15,6 @@ class TreeNode:
         self._ref   = 1
         self._height= 0
 
-    def __del__(self):
-        self = None
-
     @property
     def height(self):
         return self._height

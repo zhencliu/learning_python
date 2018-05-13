@@ -106,4 +106,4 @@ class BiTree(object):
 
     def clear(self):
         self._clear(self.root)
-        #self.root = None
+        self.root = None

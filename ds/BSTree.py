@@ -14,39 +14,41 @@ class BSTree(BiTree):
     def __init__(self):
         super().__init__()
 
-    def _insert_recur(self, node, new):
-        if node is None:
-            return new
+    def _insert_recur(self, T, value):
+        if T is None:
+            T = TreeNode(value)
+            self.count += 1
         else:
-            if new.value < node.value:
-                node.left  = self._insert(node.left, new)
-            elif new.value == node.value:
-                node.ref = node.ref + 1
+            if value < T.value:
+                T.left  = self._insert_recur(T.left, value)
+            elif value == T.value:
+                T.ref += 1
             else:
-                node.right = self._insert(node.right, new)
+                T.right = self._insert_recur(T.right, value)
             
-            return node
+        return T
      
-    def _delete_recur(self, node, parent):
-        if node.left is None and node.right is None:
-            if parent.left is node:
-                parent.left = None
-            else:
-                parent.right = None
+    def _delete_recur(self, T, value):
+        if T is None:
+            return None
+        elif value < T.value:
+            T.left = self._delete_recur(T.left, value)
+        elif value > T.value:
+            T.right = self._delete_recur(T.right, value)
         else:
-            sub_tree, n, p = None, None, None
+            T.ref -= 1
 
-            if node.left is not None:
-                n = self._max(node.left)
-                sub_tree = node.left
-            elif node.right is not None:
-                n = self._min(node.right)
-                sub_tree = node.right
+            if T.ref == 0:
+                if T.left is not None and T.right is not None:
+                    minnode = self._min(T.right)
+                    T.value, T.ref = minnode.value, minnode.ref
+                    minnode.ref = 1
+                    T.right = self._delete_recur(T.right, T.value)
+                else:
+                    T = T.left if T.left is not None else T.right
+                    self.count -= 1
 
-            node.value = n.value
-            node.ref = n.ref
-            n, p = self._find(sub_tree, n.value)
-            self._delete(n, p)
+        return T
     
     def _min(self, tree):
         node = tree
@@ -88,15 +90,7 @@ class BSTree(BiTree):
         return self._find(self.root, value)
                     
     def delete_recur(self, value):
-        node, parent = self.find(value)
-        
-        if node is not None:
-            if node.ref > 1:
-                node.ref -= 1
-            else:
-                self._delete(node, parent)
-           
-            self._count -= 1
+        return self._delete_recur(self.root, value)
 
     def delete(self, value):
         node, parent = self._find(self.root, value)
@@ -174,14 +168,7 @@ class BSTree(BiTree):
                             parent.left = minnode.right
 
     def insert_recur(self, value):
-        new = TreeNode(value)
-
-        if self.empty():
-            self._root = new
-        else:
-            self._insert(self._root, new)
-        
-        self._count += 1
+        return self._insert_recur(self.root, value)
     
     def insert(self, value):
         node, parent = self._find(self.root, value)
@@ -207,7 +194,7 @@ class BSTree(BiTree):
 
     def create(self, iterator):
         for val in iterator:
-            self.insert(val)
+            self.root = self.insert_recur(val)
 
     def min(self):
         n = self._min(self.root)
@@ -225,10 +212,6 @@ if __name__ == '__main__':
     t.create(l)
     print("Inorder:")
     t.inorder()
-    print("Preorder:")
-    t.preorder()
-    print("Postorder:")
-    t.postorder()
 
     print("min: %s" %t.min())
     print("max: %s" %t.max())
@@ -241,6 +224,7 @@ if __name__ == '__main__':
     t.delete(t.root.value)
     print("Inorder:")
     t.inorder()
+    print("Del root: %s" %t.root.value)
     t.delete(t.root.value)
     print("Inorder:")
     t.inorder()
@@ -257,7 +241,7 @@ if __name__ == '__main__':
     print(t.root)
     
     for i in l:
-        t.delete(i)
+        t.root = t.delete_recur(i)
 
-    print(t.count)
-    print(t.root)
+    print("count of t: %s" %t.count)
+    print("root: %s" %t.root)
